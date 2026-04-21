@@ -1,0 +1,38 @@
+======================================================
+🎯 PROBLEM FRAMING DOCUMENT
+=======================================================
+
+🔹 COMPANY:
+      QuickCart (E-Commerce)
+
+🔹 COMPLAINT:
+      Sales dropped 20% this month
+
+🔹 REAL QUESTION:
+      Which customers are about to stop buying from us?
+
+🔹 METRIC:
+      Customer Churn Rate (%)
+
+🔹 TARGET VARIABLE:
+      will_churn
+
+🔹 DATA NEEDED:
+      ✅ last_purchase_date
+      ✅ purchase_frequency
+      ✅ avg_order_value
+      ✅ support_tickets
+      ✅ email_open_rate
+
+🔹 ML APPROACH:
+      Binary Classification
+
+🔹 SUCCESS CRITERIA:
+      Recall > 80%
+
+🔹 BUSINESS IMPACT:
+      Retain top 1000 customers = ₹50L revenue saved
+
+=======================================================
+✅ Problem Framing Complete! Ready for Data Collection.
+=======================================================
