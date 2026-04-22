@@ -80,16 +80,6 @@ AI-Learning-Journey/
 
 ---
 
-## 📊 Daily Progress
-
-| Day | Topic | Status |
-|-----|------|--------|
-| 01  | Problem Framing | ✅ Completed |
-| 02  | Data Collection | ⏳ In Progress |
-| ... | ... | ... |
-
----
-
 ## 🔥 Featured Project (Day 1)
 
 ### 🧠 Business Problem Analyzer
