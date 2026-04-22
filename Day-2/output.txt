@@ -1,0 +1,61 @@
+================================================================
+🚀 DAY 2 — QuickCart EDA  |  Real Business Dataset
+================================================================
+
+STEP 1: Dataset → 600 rows × 11 columns
+
+STEP 2A: df.head()
+  customer_id  age    city    gender  device    category  total_spend  orders  rating  days_inactive  membership
+  C001         36   Mumbai   Male    Mobile   Fashion       2528.91      2     NaN        49          Silver
+  C002         30  Bangalore Male    Desktop  Fashion        903.63      5     NaN        20          Free
+  C003         37  Bangalore Female  Mobile   Fashion       3939.58      6     4.0        41          Silver
+  C004         45  Bangalore Male    Mobile   Groceries     1216.46      7     NaN         7          Gold
+  C005         29  Bangalore Male    Mobile   Electronics     NaN        21    3.0        11          Free
+
+STEP 2B: df.shape → (600, 11)
+
+STEP 2C: df.info()
+  total_spend   → 564 non-null  (36 missing!)
+  rating        → 546 non-null  (54 missing!)
+  All others    → 600 non-null  ✅
+
+STEP 3: df.describe()
+         age   total_spend  orders  rating  days_inactive
+count   600.0     564.0    600.0   546.0      600.0
+mean    31.57    4708.87   13.15    3.86       26.56
+std      8.34    6302.07    7.38    1.10       26.65
+min     18.00     200.00    1.00    1.00        1.00
+25%     25.00    1482.38    7.00    3.00        8.00
+50%     32.00    3155.00   13.00    4.00       18.00
+75%     37.00    5805.63   20.00    5.00       36.00
+max     65.00   68552.41   25.00    5.00      170.00
+→ total_spend mean vs max = OUTLIERS DETECTED!
+
+STEP 4: MISSING VALUES
+  rating:       54 missing (9.0%)  → fill with median
+  total_spend:  36 missing (6.0%)  → category-wise fill
+
+STEP 5: CLEANING
+  ✅ rating filled with median: 4.0
+  ✅ total_spend filled with category median
+     Electronics → ₹8,418  |  Books → ₹829
+  ✅ spend_per_order created
+  ✅ churn_risk flag: 63 customers (10.5%)
+  ✅ value_segment: Low/Mid/High
+
+STEP 6: OUTLIER DETECTION (IQR)
+  Q1           = ₹1,505
+  Q3           = ₹5,935
+  IQR          = ₹4,430
+  Upper bound  = ₹12,580
+  Outliers     = 31 customers (₹12,653 – ₹68,552)
+  → Capped at ₹12,580 (Winsorization)
+
+STEP 7: BUSINESS INSIGHTS
+  📊 Electronics = 55% of total revenue
+  📊 Mobile churn rate: 12.2% vs Desktop: 5.4%
+  📊 63 customers at churn risk → ₹2.67L at stake
+  📊 100 customers with <5 orders → loyalty opportunity
+================================================================
+✅ Full EDA Complete!
+================================================================
