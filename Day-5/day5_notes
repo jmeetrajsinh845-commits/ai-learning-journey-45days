@@ -1,0 +1,15 @@
+# 📓 DAY 5 — First ML Model Notes
+## Logistic Regression | Churn Prediction | QuickCart
+
+## Real Results:
+- Accuracy: 95.0% | Recall: 100% | AUC: 99.3%
+- TN=102, FP=6, FN=0, TP=12
+- CV Recall: 95.0% ± 6.7% (stable!)
+- Business ROI: 497% per month!
+
+## Key Rules:
+1. fit on TRAIN only, transform on test
+2. stratify=y in train_test_split
+3. Use F1+Recall for imbalanced data
+4. class_weight='balanced' for imbalanced
+5. Tune threshold for business need
