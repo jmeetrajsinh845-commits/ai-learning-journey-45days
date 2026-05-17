@@ -1,0 +1,88 @@
+import pandas as pd
+import numpy as np
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import cross_val_score, StratifiedKFold
+from sklearn.metrics import classification_report, roc_auc_score
+from xgboost import XGBClassifier
+import warnings
+warnings.filterwarnings('ignore')
+
+# ── Load your dataset (same as Day 5/6) ──
+# df = pd.read_csv('churn_data.csv')
+# X = df.drop('churn_risk', axis=1)
+# y = df['churn_risk']
+
+# ── For reproducibility, rebuild synthetic data ──
+np.random.seed(42)
+n = 600
+df = pd.DataFrame({
+    'days_inactive':  np.random.randint(0, 180, n),
+    'rfm_score':      np.random.uniform(0, 100, n),
+    'total_spend':    np.random.uniform(500, 15000, n),
+    'orders':         np.random.randint(1, 50, n),
+    'engagement_score': np.random.uniform(0, 10, n),
+})
+# Churn rule from Day 4/5 — same as before
+df['churn_risk'] = (
+    (df['days_inactive'] > 60) |
+    (df['rfm_score'] < 25)
+).astype(int)
+
+X = df.drop('churn_risk', axis=1)
+y = df['churn_risk']
+
+cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+
+# ── MODEL 1: Logistic Regression (your Day 5 baseline) ──
+lr = LogisticRegression(class_weight='balanced', max_iter=1000, random_state=42)
+lr_f1  = cross_val_score(lr, X, y, cv=cv, scoring='f1').mean()
+lr_auc = cross_val_score(lr, X, y, cv=cv, scoring='roc_auc').mean()
+
+# ── MODEL 2: Random Forest (Day 6) ──
+rf = RandomForestClassifier(
+    n_estimators=200,
+    max_depth=None,
+    class_weight='balanced',
+    random_state=42
+)
+rf_f1  = cross_val_score(rf, X, y, cv=cv, scoring='f1').mean()
+rf_auc = cross_val_score(rf, X, y, cv=cv, scoring='roc_auc').mean()
+
+# ── MODEL 3: XGBoost ──
+# scale_pos_weight handles class imbalance for XGBoost
+# formula: count(negatives) / count(positives)
+neg = (y == 0).sum()
+pos = (y == 1).sum()
+spw = neg / pos  # ~9.0 for 90/10 split
+
+xgb = XGBClassifier(
+    n_estimators=200,
+    learning_rate=0.1,
+    max_depth=4,          # shallow — start here, not default 6
+    subsample=0.8,
+    colsample_bytree=0.8,
+    scale_pos_weight=spw, # replaces class_weight='balanced'
+    eval_metric='logloss',
+    random_state=42,
+    verbosity=0
+)
+xgb_f1  = cross_val_score(xgb, X, y, cv=cv, scoring='f1').mean()
+xgb_auc = cross_val_score(xgb, X, y, cv=cv, scoring='roc_auc').mean()
+
+# ── COMPARISON TABLE ──
+results = pd.DataFrame({
+    'Model':   ['Logistic Regression', 'Random Forest', 'XGBoost'],
+    'F1 Score': [round(lr_f1,3), round(rf_f1,3), round(xgb_f1,3)],
+    'ROC-AUC':  [round(lr_auc,3), round(rf_auc,3), round(xgb_auc,3)],
+})
+print(results.to_string(index=False))
+
+# ── FEATURE IMPORTANCE: XGBoost ──
+import matplotlib.pyplot as plt
+
+xgb.fit(X, y)
+feat_imp = pd.Series(xgb.feature_importances_, index=X.columns)
+feat_imp.sort_values().plot(kind='barh', figsize=(8,4), title='XGBoost Feature Importance')
+plt.tight_layout()
+plt.show()
