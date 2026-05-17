@@ -1,0 +1,14 @@
+import shap
+
+explainer = shap.TreeExplainer(xgb)
+shap_values = explainer.shap_values(X)
+
+# Global feature importance (better than .feature_importances_)
+shap.summary_plot(shap_values, X, plot_type='bar')
+
+# For ONE customer — why did we predict churn?
+shap.force_plot(
+    explainer.expected_value,
+    shap_values[0],      # first customer
+    X.iloc[0]
+)
